@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bellissimo Restaurant — Nitra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E6;
+    --burgundy:#6E1423;
+    --burgundy-deep:#4A0D18;
+    --charcoal:#15120E;
+    --ember:#C97C3D;
+    --smoke: rgba(21,18,14,0.5);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--charcoal);
+    font-family:'Inter', sans-serif;
+    overscroll-behavior-y: none;
+  }
+
+  .hero{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+    background:var(--charcoal);
+  }
+
+  .hero__video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    /* object-fit:contain; -- uncomment to letterbox instead of crop */
+    display:block;
+  }
+
+  .hero__scrim{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(21,18,14,0.55) 0%, rgba(21,18,14,0.05) 30%, rgba(21,18,14,0.15) 60%, rgba(21,18,14,0.65) 100%);
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* Content overlay, sits above the video, pointer-events off except the CTA */
+  .hero__content{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:clamp(24px, 5vw, 64px);
+    color:var(--cream);
+  }
+
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .brand__mark{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(20px, 2.4vw, 28px);
+    letter-spacing:0.01em;
+    color:var(--cream);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.45);
+  }
+  .brand__sub{
+    font-family:'Inter', sans-serif;
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:600;
+  }
+
+  .hero__center{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:20px;
+    max-width:820px;
+    margin:0 auto;
+  }
+
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:600;
+  }
+
+  .headline{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(34px, 6.2vw, 76px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    color:var(--cream);
+    text-shadow: 0 4px 30px rgba(0,0,0,0.45);
+  }
+
+  .headline em{
+    font-style:italic;
+    color:var(--ember);
+  }
+
+  .hint{
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:rgba(247,241,230,0.8);
+    opacity:1;
+    transition:opacity 0.6s ease;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+  }
+  .hint.is-hidden{ opacity:0; }
+
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+
+  .footer-info{
+    font-size:13px;
+    line-height:1.5;
+    color:rgba(247,241,230,0.9);
+  }
+  .footer-info strong{
+    font-weight:600;
+    display:block;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:4px;
+    color:var(--ember);
+  }
+
+  .cta{
+    pointer-events:auto;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--cream);
+    background:var(--burgundy);
+    border:1px solid rgba(247,241,230,0.25);
+    padding:16px 30px;
+    border-radius:999px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .cta:hover{
+    background:var(--burgundy-deep);
+    transform:translateY(-2px);
+  }
+  .cta:focus-visible{
+    outline:2px solid var(--ember);
+    outline-offset:3px;
+  }
+
+  @media (max-width: 640px){
+    .footer-row{ flex-direction:column; align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero__video{
+      /* handled in JS: scrubbing is skipped entirely under reduced motion */
+    }
+  }
+
+  /* ---------- Module 2: scroll-triggered video ---------- */
+  .video-section{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+    background:var(--charcoal);
+  }
+
+  .video-section__video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    /* object-fit:contain; -- uncomment to letterbox instead of crop */
+    display:block;
+  }
+
+  .video-section__scrim{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(21,18,14,0.15) 0%, rgba(21,18,14,0.05) 35%, rgba(21,18,14,0.75) 100%);
+    pointer-events:none;
+  }
+
+  .video-section__content{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:clamp(24px, 5vw, 64px);
+    pointer-events:none;
+  }
+
+  .video-section__eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:600;
+    margin-bottom:12px;
+    display:block;
+  }
+
+  .video-section__title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(30px, 5vw, 58px);
+    line-height:1.05;
+    color:var(--cream);
+    max-width:14ch;
+    margin:0 0 28px 0;
+  }
+
+  .scroll-cue{
+    position:absolute;
+    left:50%;
+    bottom:clamp(20px, 4vh, 40px);
+    transform:translateX(-50%);
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:var(--cream);
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    opacity:1;
+    transition:opacity 0.5s ease;
+    pointer-events:none;
+  }
+  .scroll-cue.is-hidden{ opacity:0; }
+  .scroll-cue__arrow{
+    width:18px;
+    height:18px;
+    border-right:2px solid var(--ember);
+    border-bottom:2px solid var(--ember);
+    transform:rotate(45deg);
+    animation: cueBounce 1.6s ease-in-out infinite;
+  }
+  @keyframes cueBounce{
+    0%,100%{ transform:rotate(45deg) translate(0,0); }
+    50%{ transform:rotate(45deg) translate(4px,4px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero" id="hero">
+  <video
+    class="hero__video"
+    id="scrubVideo"
+    src="assets/burger_split.mp4"
+    muted
+    playsinline
+    preload="auto"
+  ></video>
+  <div class="hero__scrim"></div>
+
+  <div class="hero__content">
+    <div class="brand">
+      <span class="brand__mark">Bellissimo</span>
+      <span class="brand__sub">Restaurant · Nitra</span>
+    </div>
+
+    <div class="hero__center">
+      <span class="eyebrow">Pizza z pece · OC Max Nitra</span>
+      <h1 class="headline">Rozdeľ ho.<br>Uvidíš, čo je <em>vo vnútri.</em></h1>
+      <span class="hint" id="hint">pohni kurzorom / potiahni prstom doľava a doprava</span>
+    </div>
+
+    <div class="footer-row">
+      <div class="footer-info">
+        <strong>Otváracie hodiny</strong>
+        Po – Ne · 11:00 – 22:00
+      </div>
+      <a href="#menu" class="cta">Objaviť menu</a>
+    </div>
+  </div>
+</div>
+
+<section class="video-section" id="videoSection">
+  <video
+    class="video-section__video"
+    id="scrollVideo"
+    src="assets/exterior.mp4"
+    muted
+    playsinline
+    preload="auto"
+  ></video>
+  <div class="video-section__scrim"></div>
+  <div class="video-section__content">
+    <span class="video-section__eyebrow">Naša terasa</span>
+    <h2 class="video-section__title">Medzi stolmi, kvetmi a domčekom pre deti.</h2>
+  </div>
+  <div class="scroll-cue" id="scrollCue">
+    <span>scrolluj nadol</span>
+    <span class="scroll-cue__arrow"></span>
+  </div>
+</section>
+
+<script>
+// ---------- Module 3: mouse-controlled video scrub (hero) ----------
+(function(){
+  const hero = document.getElementById('hero');
+  const video = document.getElementById('scrubVideo');
+  const hint = document.getElementById('hint');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return; // video stays paused on its poster/first frame, no scrub
+
+  let duration = 0;
+  let durationKnown = false;
+  let targetTime = 0;
+  let displayedTime = 0;
+  let hintHidden = false;
+  let rafRunning = false;
+
+  video.addEventListener('loadedmetadata', function(){
+    duration = video.duration;
+    durationKnown = isFinite(duration) && duration > 0;
+  });
+
+  // Race guard: if metadata already loaded before this script ran, the event above
+  // will never fire — pick it up directly.
+  if (video.readyState >= 1 && isFinite(video.duration) && video.duration > 0){
+    duration = video.duration;
+    durationKnown = true;
+  }
+
+  function hideHint(){
+    if (!hintHidden){
+      hintHidden = true;
+      hint.classList.add('is-hidden');
+    }
+  }
+
+  function setTargetFromX(clientX){
+    if (!durationKnown) return;
+    const rect = hero.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    targetTime = ratio * duration;
+    hideHint();
+    startLoop();
+  }
+
+  function startLoop(){
+    if (rafRunning) return;
+    rafRunning = true;
+    requestAnimationFrame(tick);
+  }
+
+  function tick(){
+    const diff = targetTime - displayedTime;
+    if (Math.abs(diff) < 0.01){
+      displayedTime = targetTime;
+      rafRunning = false;
+    } else {
+      displayedTime += diff * 0.18; // ease toward target
+      requestAnimationFrame(tick);
+    }
+    if (durationKnown){
+      video.currentTime = displayedTime;
+    }
+  }
+
+  hero.addEventListener('pointermove', function(e){
+    if (e.pointerType === 'touch') return; // handled by touchmove below
+    setTargetFromX(e.clientX);
+  }, { passive: true });
+
+  hero.addEventListener('touchmove', function(e){
+    if (e.touches && e.touches[0]){
+      setTargetFromX(e.touches[0].clientX);
+    }
+  }, { passive: true });
+})();
+
+// ---------- Module 2: scroll-triggered video ----------
+(function(){
+  const section = document.getElementById('videoSection');
+  const video = document.getElementById('scrollVideo');
+  const cue = document.getElementById('scrollCue');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let isActive = false;   // section is the one currently in view
+  let state = 'pending';  // 'pending' -> 'locking' -> 'done'
+
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      isActive = entry.intersectionRatio > 0.6;
+    });
+  }, { threshold: [0, 0.6, 1] });
+  io.observe(section);
+
+  if (prefersReducedMotion){
+    cue.classList.add('is-hidden');
+    return; // no scroll-jacking, no autoplay; video stays paused on first frame
+  }
+
+  function hideCue(){
+    cue.classList.add('is-hidden');
+  }
+
+  function startPlayback(){
+    state = 'locking';
+    hideCue();
+    video.play().catch(function(){
+      // Playback blocked (e.g. no user gesture registered) — fail open, don't trap scroll.
+      state = 'done';
+    });
+  }
+
+  video.addEventListener('ended', function(){
+    state = 'done';
+  });
+
+  function shouldLock(deltaY){
+    if (!isActive) return false;
+    if (state === 'done') return false;
+    if (state === 'locking') return true;              // always hold during playback
+    if (state === 'pending') return deltaY > 0;         // only intercept the downward trigger
+    return false;
+  }
+
+  window.addEventListener('wheel', function(e){
+    if (!shouldLock(e.deltaY)) return;
+    e.preventDefault();
+    if (state === 'pending'){
+      startPlayback();
+    }
+  }, { passive: false });
+
+  let touchStartY = null;
+  window.addEventListener('touchstart', function(e){
+    if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function(e){
+    if (touchStartY === null || !e.touches || !e.touches[0]) return;
+    const deltaY = touchStartY - e.touches[0].clientY; // positive = finger moving up = scrolling down
+    if (!shouldLock(deltaY)) return;
+    e.preventDefault();
+    if (state === 'pending'){
+      startPlayback();
+    }
+  }, { passive: false });
+})();
+</script>
+
+</body>
+</html>
